@@ -60,9 +60,10 @@ function parseLatLon(rawStr) {
 }
 
 function loadMapFromCoords() {
-  const coords = parseLatLon(inputCoords.value);
+  const cleanStr = inputCoords.value.replace(/;/g, ',');
+  const coords = parseLatLon(cleanStr);
   if (!coords) {
-    statusText.innerText = 'Format koordinat salah (Contoh: -6.4062, 107.4630)';
+    statusText.innerText = 'Format koordinat tidak terbaca.';
     return;
   }
 
@@ -85,20 +86,39 @@ function loadMapFromCoords() {
     return;
   }
 
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function () {
-    mapTileImage = img;
-    lastTileKey = tileKey;
-    statusText.innerText = 'Peta berhasil dimuat!';
-    if (mediaType === 'image') drawImageFrame();
-  };
-  img.onerror = function () {
-    statusText.innerText = 'Gagal memuat gambar peta (cek koneksi internet).';
-  };
-  img.src = 'https://openstreetmap.org' + zoom + '/' + x + '/' + y + '.png';
-}
+  const servers = new Array(
+    'https://cartocdn.com' + zoom + '/' + x + '/' + y + '.png',
+    'https://arcgisonline.com' + zoom + '/' + y + '/' + x,
+    'https://openstreetmap.org' + zoom + '/' + x + '/' + y + '.png'
+  );
 
+  statusText.innerText = 'Memuat gambar peta...';
+
+  function tryNextServer(idx) {
+    if (idx >= servers.length) {
+      statusText.innerText = 'Semua server peta gagal dimuat.';
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function () {
+      mapTileImage = img;
+      lastTileKey = tileKey;
+      statusText.innerText = 'Peta berhasil dimuat!';
+      if (mediaType === 'image') drawImageFrame();
+    };
+    img.onerror = function () {
+      tryNextServer(idx + 1);
+    };
+
+    const targetUrl = servers.slice(idx, idx + 1).shift();
+    img.src = targetUrl;
+  }
+
+  tryNextServer(0);
+  }
+    
 loadMapFromCoords();
 function refreshPreviewIfImage() {
   if (mediaType === 'image') drawImageFrame();
