@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timestamp Camera Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2 class="page-title">Timestamp Camera Web</h2>
+
+  <div class="container">
+    <div class="card">
+      <div class="form-group">
+        <label for="mediaInput">1. Pilih Foto atau Video</label>
+        <input type="file" id="mediaInput" accept="image/*,video/*">
+      </div>
+
+      <div class="form-group">
+        <label for="inputName">2. Nama Pembuat / Petugas</label>
+        <input type="text" id="inputName" value="Dery Kusuma Putra">
+      </div>
+
+      <div class="form-group">
+        <label for="inputTime">3. Waktu Awal (Tanggal & Jam)</label>
+        <input type="datetime-local" id="inputTime" step="1">
+      </div>
+
+      <div class="form-group">
+        <label for="inputCoords">4. Titik Koordinat (Lat, Lon)</label>
+        <input type="text" id="inputCoords" value="-6.4062, 107.4630">
+        <div class="btn-row">
+          <button type="button" id="btnGps" class="btn-gps">Ambil GPS 1x</button>
+          <button type="button" id="btnLiveGps" class="btn-live">Lacak Gerakan HP: OFF</button>
+        </div>
+        <button type="button" id="btnUpdateMap" class="btn-map" style="margin-top:6px;">Muat Peta dari Koordinat Manual</button>
+      </div>
+
+      <div class="form-group">
+        <label for="inputLocation">5. Nama Lokasi / Alamat</label>
+        <textarea id="inputLocation" rows="2">Jalan Kampung Baru Timur&#10;Cikampek Kota</textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="inputAltitude">Altitude (msnm)</label>
+          <input type="text" id="inputAltitude" value="71.7msnm">
+        </div>
+        <div class="form-group">
+          <label for="inputSpeed">Speed (km/h)</label>
+          <input type="text" id="inputSpeed" value="1.1km/h">
+        </div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="toggleAltSpeed" checked>
+        <label for="toggleAltSpeed">Tampilkan Altitude & Speed</label>
+      </div>
+
+      <div class="form-group">
+        <label for="inputFontSize">Ukuran Teks Kanan Bawah: <span id="fontSizeLabel">100%</span></label>
+        <input type="range" id="inputFontSize" min="50" max="200" value="100" step="5">
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-box">
+        <div class="checkbox-group" style="margin-top:0;">
+          <input type="checkbox" id="toggleMap" checked>
+          <label for="toggleMap">Show Map (Tampilkan Peta)</label>
+        </div>
+        <div class="form-group">
+          <label for="mapPosition">Posisi Peta</label>
+          <select id="mapPosition">
+            <option value="bottom-left" selected>Bottom Left (Kiri Bawah)</option>
+            <option value="bottom-center">Bottom Center (Tengah Bawah)</option>
+            <option value="bottom-right">Bottom Right (Kanan Bawah)</option>
+            <option value="top-left">Top Left (Kiri Atas)</option>
+            <option value="top-center">Top Center (Tengah Atas)</option>
+            <option value="top-right">Top Right (Kanan Atas)</option>
+            <option value="center">Center (Tengah)</option>
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="mapSize">Ukuran Peta: <span id="mapSizeLabel">100%</span></label>
+            <input type="range" id="mapSize" min="50" max="200" value="100" step="5">
+          </div>
+          <div class="form-group">
+            <label for="mapOpacity">Opacity Peta: <span id="mapOpacityLabel">75%</span></label>
+            <input type="range" id="mapOpacity" min="10" max="100" value="75" step="5">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-box">
+        <div class="form-group">
+          <label for="logoInput">Import Watermark Logo</label>
+          <input type="file" id="logoInput" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label for="logoPosition">Posisi Logo</label>
+          <select id="logoPosition">
+            <option value="top-left" selected>Top Left (Kiri Atas)</option>
+            <option value="top-center">Top Center (Tengah Atas)</option>
+            <option value="top-right">Top Right (Kanan Atas)</option>
+            <option value="bottom-left">Bottom Left (Kiri Bawah)</option>
+            <option value="bottom-center">Bottom Center (Tengah Bawah)</option>
+            <option value="bottom-right">Bottom Right (Kanan Bawah)</option>
+            <option value="center">Center (Tengah)</option>
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="logoSize">Ukuran Logo: <span id="logoSizeLabel">100%</span></label>
+            <input type="range" id="logoSize" min="30" max="250" value="100" step="5">
+          </div>
+          <div class="form-group">
+            <label for="logoOpacity">Opacity Logo: <span id="logoOpacityLabel">100%</span></label>
+            <input type="range" id="logoOpacity" min="10" max="100" value="100" step="5">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="btnProcess" class="btn-process">Proses & Unduh Hasil</button>
+      <div id="statusText" class="status"></div>
+    </div>
+
+    <div class="card">
+      <label class="preview-label">Pratinjau Hasil (Live Preview)</label>
+      <canvas id="previewCanvas" width="640" height="480"></canvas>
+    </div>
+  </div>
+
+  <video id="hiddenVideo" playsinline muted preload="auto"></video>
+
+  <script src="script.js"></script>
+</body>
+</html>
